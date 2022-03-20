@@ -1,0 +1,3 @@
+#!/bin/bash
+export WEBOTS_HOME="/mnt/c/Program\ Files/Webots"
+export PYTHONPATH="/mnt/c/Program\ Files/Webots/lib/controller/python38" 
