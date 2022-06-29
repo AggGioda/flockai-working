@@ -5,6 +5,71 @@ from flockai.models.devices.device_enums import EnableableDevice, NonEnableableD
 import time
 import json
 
+class SlaveKeyboardMavic2DJI(KeyboardControlledDrone):
+    def __init__(self, devices, probe: FlockAIProbe=None, model=None):
+        super().__init__(devices)
+
+    def run(self):
+        # Wait a second before starting
+        while self.step(self.basic_time_step) != -1:
+            if self.getTime() > 1:
+                break
+
+        led_devices = []
+        emitter_devices = []
+        receiver_devices = []
+        for device_name in self.devices:
+            if self.devices[device_name]['type'] == NonEnableableDevice.LED:
+                led_devices.append(device_name)
+            if self.devices[device_name]['type'] == NonEnableableDevice.EMITTER:
+                emitter_devices.append(device_name)
+            if self.devices[device_name]['type'] == EnableableDevice.RECEIVER:
+                receiver_devices.append(device_name)
+
+        while self.step(self.basic_time_step) != -1:
+
+            if self.getTime() > 600:
+                break
+
+            self.actuate()
+
+            received_messages = self.receive_msgs(receiver_devices=receiver_devices)
+            print(received_messages)
+            # self.send_msg(msg=str(prediction), emitter_devices=emitter_devices)
+
+
+class MasterKeyboardMavic2DJI(KeyboardControlledDrone):
+    def __init__(self, devices, probe: FlockAIProbe = None, model=None):
+        super().__init__(devices)
+
+    def run(self):
+        # Wait a second before starting
+        while self.step(self.basic_time_step) != -1:
+            if self.getTime() > 1:
+                break
+
+        led_devices = []
+        emitter_devices = []
+        receiver_devices = []
+        for device_name in self.devices:
+            if self.devices[device_name]['type'] == NonEnableableDevice.LED:
+                led_devices.append(device_name)
+            if self.devices[device_name]['type'] == NonEnableableDevice.EMITTER:
+                emitter_devices.append(device_name)
+            if self.devices[device_name]['type'] == EnableableDevice.RECEIVER:
+                receiver_devices.append(device_name)
+
+        while self.step(self.basic_time_step) != -1:
+
+            if self.getTime() > 600:
+                break
+
+            self.actuate()
+
+            # received_messages = self.receive_msgs(receiver_devices=receiver_devices)
+            self.devices["emitter"]["device"].setRange(3)
+            self.send_msg(msg=str(time.time()), emitter_devices=emitter_devices)
+
 class KeyboardMavic2DJI(KeyboardControlledDrone):
     """
     A Keyboard Controlled Mavic2DJI
